@@ -121,3 +121,384 @@ public:
 };
 ```
 
+### 3. Getting Started with Classes and Objects in C++
+#### Creating a Class
+To create a class in C++, you use the `class` keyword followed by the class name. Inside the class, you define the attributes and methods that the objects of the class will have. Here's an example of a `Person` class:
+
+```cpp
+class Person {
+public:
+    // Attributes
+	string name;
+    int age;
+
+    // Method to display information
+    void displayInfo() {
+      cout << "Name: " << name << ", Age: " << age << endl;
+    }
+};
+```
+
+#### Creating Objects
+To create an object of a class, you simply declare a variable of that class type. Here's how you can create objects of the `Person` class:
+
+```cpp
+int main() {
+    // Creating objects
+    Person person1;
+    Person person2;
+
+    // Setting object attributes
+    person1.name = "Alice";
+    person1.age = 30;
+
+    person2.name = "Bob";
+    person2.age = 25;
+
+    // Displaying object information
+    person1.displayInfo();
+    person2.displayInfo();
+
+    return 0;
+}
+```
+
+#### Understanding Encapsulation
+Encapsulation is the bundling of data (attributes) and methods that operate on the data into a single unit (class). In the `Person` class example, `name` and `age` are encapsulated within the `Person` class, and the `displayInfo()` method encapsulates the logic for displaying the person's information.
+
+By encapsulating data and methods within a class, you can control access to the data (e.g., making `name` and `age` private and providing public methods to access them) and enforce data integrity and consistency.
+
+### 4. Understanding Encapsulation, Constructors, and Destructors in C++
+#### Encapsulation 
+In the `Person` class example, encapsulation is achieved by making the `name` and `age` attributes private and providing public methods (`setName()`, `setAge()`, `getName()`, `getAge()`) to access and modify these attributes. Here's how you can modify the `Person` class to achieve encapsulation:
+
+```cpp
+class Person {
+private:
+    std::string name;
+    int age;
+
+public:
+    // Constructor
+    Person(std::string n, int a) {
+        name = n;
+        age = a;
+    }
+
+    // Methods to set and get name and age
+    void setName(std::string n) {
+        name = n;
+    }
+
+    std::string getName() {
+        return name;
+    }
+
+    void setAge(int a) {
+        age = a;
+    }
+
+    int getAge() {
+        return age;
+    }
+
+    // Method to display information
+    void displayInfo() {
+        std::cout << "Name: " << name << ", Age: " << age << std::endl;
+    }
+};
+```
+
+#### Constructors
+A constructor is a special member function of a class that is called automatically when an object of the class is created. Constructors can be used to initialize the object's attributes or perform any other initialization tasks. In the modified `Person` class, we added a constructor that takes the `name` and `age` as parameters and initializes the object:
+
+```cpp
+Person(std::string n, int a) {
+    name = n;
+    age = a;
+}
+```
+
+With this constructor, you can now create a `Person` object and initialize it in a single step:
+
+```cpp
+Person person1("Alice", 30);
+```
+
+#### Destructors
+A destructor is a special member function of a class that is called automatically when an object is destroyed (e.g., when it goes out of scope or when `delete` is called on a dynamically allocated object). Destructors are used to release resources (such as memory) that the object may have acquired during its lifetime. 
+
+In the `Person` class, we can add a destructor to release any resources the object might have acquired (though in this simple example, it's not necessary):
+
+```cpp
+~Person() {
+    // Destructor code here 
+}
+```
+
+Destructors are automatically called when an object is destroyed, and you do not need to explicitly call them. They are useful for cleaning up resources and performing any necessary cleanup tasks before an object is destroyed.
+
+### 5. Inheritance in C++
+
+Inheritance is a key concept in object-oriented programming that allows you to create a new class (derived class) based on an existing class (base class). The derived class inherits attributes and methods from the base class, and can also add its own attributes and methods. Let's explore inheritance in C++ using an example:
+
+#### Base Class
+First, let's define a base class called `Shape` that has a method to calculate the area of the shape:
+
+```cpp
+class Shape {
+public:
+    virtual double calculateArea() = 0; // Pure virtual function
+};
+```
+
+In this example, `calculateArea()` is a pure virtual function, which means that any class deriving from `Shape` must provide an implementation for this function.
+
+#### Derived Classes
+Now, let's create two derived classes, `Circle` and `Rectangle`, that inherit from the `Shape` class:
+
+```cpp
+class Circle : public Shape {
+private:
+    double radius;
+
+public:
+    Circle(double r) : radius(r) {}
+
+    double calculateArea() override {
+        return 3.14 * radius * radius;
+    }
+};
+
+class Rectangle : public Shape {
+private:
+    double width;
+    double height;
+
+public:
+    Rectangle(double w, double h) : width(w), height(h) {}
+
+    double calculateArea() override {
+        return width * height;
+    }
+};
+```
+
+In these classes, we've implemented the `calculateArea()` method to calculate the area of a circle and a rectangle, respectively.
+
+#### Using Inheritance
+You can now create objects of the `Circle` and `Rectangle` classes and use them as follows:
+
+```cpp
+int main() {
+    Circle circle(5.0);
+    Rectangle rectangle(4.0, 6.0);
+
+    // Calculate and display areas
+    cout << "Circle Area: " << circle.calculateArea() << endl;
+    cout << "Rectangle Area: " << rectangle.calculateArea() << endl;
+
+    return 0;
+}
+```
+
+By using inheritance, you can create a hierarchy of classes that share common attributes and methods, while allowing each class to specialize and add its own unique functionality.
+
+### 6. Polymorphism in C++
+
+Polymorphism is a key concept in object-oriented programming that allows objects to be treated as instances of their base class or any of their derived classes. This means that a single interface can be used to represent different types of objects. In C++, polymorphism is achieved through virtual functions and function overriding.
+
+#### Base Class with Virtual Function
+Let's extend our `Shape` example to include a virtual function `draw()`:
+
+```cpp
+class Shape {
+public:
+    virtual double calculateArea() = 0;
+    virtual void draw() {
+	     cout << "Drawing a shape\n";
+    }
+};
+```
+
+#### Derived Classes with Overridden Functions
+Now, let's create two derived classes, `Circle` and `Rectangle`, that override the `draw()` function:
+
+```cpp
+class Circle : public Shape {
+public:
+    double calculateArea() override {
+        return 3.14 * radius * radius;
+    }
+
+    void draw() override {
+        cout << "Drawing a circle\n";
+    }
+
+private:
+    double radius;
+};
+
+class Rectangle : public Shape {
+public:
+    double calculateArea() override {
+        return width * height;
+    }
+
+    void draw() override {
+        cout << "Drawing a rectangle\n";
+    }
+
+private:
+    double width;
+    double height;
+};
+```
+
+#### Using Polymorphism
+You can now create objects of the `Circle` and `Rectangle` classes and use them polymorphically:
+
+```cpp
+int main() {
+    Shape* shapes[2];
+    shapes[0] = new Circle(5.0);
+    shapes[1] = new Rectangle(4.0, 6.0);
+
+    for (int i = 0; i < 2; i++) {
+        shapes[i]->draw();
+        cout << "Area: " << shapes[i]->calculateArea() << endl;
+    }
+
+    // Clean up memory
+    for (int i = 0; i < 2; i++) {
+        delete shapes[i];
+    }
+
+    return 0;
+}
+```
+
+In this example, we create an array of `Shape*` pointers that point to `Circle` and `Rectangle` objects. We then use these pointers to call the `draw()` and `calculateArea()` functions polymorphically, allowing each object to behave according to its specific implementation.
+
+### 7. Simplified Explanation of Object-Oriented Programming
+
+Object-Oriented Programming (OOP) can be compared to building and using a car. 
+
+#### Classes and Objects
+- **Class**: Think of a class as a blueprint for a car. It defines the properties (attributes) that all cars of that type will have, such as color, model, and year.
+- **Object**: An object is like a specific car built from the blueprint. Each object has its own unique characteristics, such as a blue Zastava Yugo 1997.
+
+#### Encapsulation
+- Encapsulation is like having the engine of the car hidden inside the hood. It keeps the internal parts of the car hidden and only exposes a way to interact with the car, such as using the steering wheel and pedals.
+
+#### Inheritance
+- Inheritance is similar to a car model hierarchy. For example, a Toyota Camry inherits features from the Toyota brand and adds its own specific features to become a unique model.
+
+#### Polymorphism
+- Polymorphism is like different cars using the same gas station. The gas station expects cars to refuel, but each car (object) implements refueling differently based on its fuel type (method).
+
+In this way, OOP helps organize code by grouping related properties and behaviors into classes and objects, making it easier to understand and maintain complex systems.
+
+### 8. Putting it All Together: A Sample Application
+
+ a simple banking system using object-oriented programming principles in C++. This example will demonstrate how to design classes, use encapsulation, inheritance, and polymorphism, and apply best practices.
+
+#### Class Design
+We'll start by designing three classes: `Account`, `SavingsAccount` (inherits from `Account`), and `CheckingAccount` (inherits from `Account`).
+
+```cpp
+#include <iostream>
+#include <string>
+
+// Base class
+class Account {
+protected:
+    std::string ownerName;
+    double balance;
+
+public:
+    Account(std::string owner, double initialBalance) : ownerName(owner), balance(initialBalance) {}
+
+    virtual void deposit(double amount) {
+        balance += amount;
+    }
+
+    virtual void withdraw(double amount) {
+        if (amount <= balance) {
+            balance -= amount;
+        } else {
+            std::cout << "Insufficient funds\n";
+        }
+    }
+
+    virtual void displayBalance() {
+        std::cout << "Account Balance: " << balance << std::endl;
+    }
+};
+
+// Derived class 1
+class SavingsAccount : public Account {
+private:
+    double interestRate;
+
+public:
+    SavingsAccount(std::string owner, double initialBalance, double rate) : Account(owner, initialBalance), interestRate(rate) {}
+
+    void addInterest() {
+        double interest = balance * interestRate / 100;
+        balance += interest;
+    }
+};
+
+// Derived class 2
+class CheckingAccount : public Account {
+private:
+    double overdraftLimit;
+
+public:
+    CheckingAccount(std::string owner, double initialBalance, double limit) : Account(owner, initialBalance), overdraftLimit(limit) {}
+
+    void withdraw(double amount) override {
+        if (amount <= balance + overdraftLimit) {
+            balance -= amount;
+        } else {
+            std::cout << "Exceeded overdraft limit\n";
+        }
+    }
+};
+```
+
+#### Using the Classes
+Now, we can create objects of `SavingsAccount` and `CheckingAccount` and demonstrate their functionality:
+
+```cpp
+int main() {
+    SavingsAccount savings("Alice", 1000.0, 5.0);
+    CheckingAccount checking("Bob", 500.0, 200.0);
+
+    savings.deposit(500.0);
+    savings.addInterest();
+    savings.displayBalance();
+
+    checking.withdraw(700.0);
+    checking.displayBalance();
+
+    return 0;
+}
+```
+
+In this example, `SavingsAccount` calculates interest based on the balance and interest rate, while `CheckingAccount` allows overdrafts up to a certain limit. This demonstrates the use of inheritance, polymorphism, and encapsulation to create a simple yet effective banking system.
+
+### 9. Best Practices in Object-Oriented Programming
+
+#### Naming Conventions
+- Use meaningful and descriptive names for classes, variables, and methods to make your code more readable and maintainable. Dont name things brbrbr IVANA or int tomce,eva,ivana,ana ova za mene vazit 
+- Follow naming conventions (e.g., CamelCase for class names, snake_case for variable names) to maintain consistency in your codebase.
+
+#### Code Readability and Maintainability
+- Write clear and concise code that is easy to understand for yourself and other developers.
+- Use comments to explain complex parts of your code and provide context for future modifications.
+
+#### Testing and Debugging
+- Test your code thoroughly to ensure it works as expected in different scenarios.
+- Use debugging tools to identify and fix errors in your code.
