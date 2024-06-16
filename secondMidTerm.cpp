@@ -7,109 +7,107 @@ using namespace std;
 class Ticket {
     string match;
     float basePrice;
-
 public:
     Ticket(string match, float basePrice) : match(match), basePrice(basePrice) {}
+    Ticket(Ticket &other) : match(other.match), basePrice(other.basePrice) {}
+
+    virtual ~Ticket() {}
+
+    Ticket& operator=(Ticket& other) = default;
 
     // getters
     float getBasePrice() { return basePrice; }
     string getMatch() { return match; }
 
     // methods
-    virtual float price() = 0;
+    virtual float cena() = 0;
+    virtual void display() {}
+};
 
-    void display(){
-    	cout << "Ticket: " << match<< " | price: "<<basePrice<<endl;
+class SeatingTicket : public Ticket {
+    int block, row;
+public:
+    SeatingTicket(string match, float basePrice, int block, int row) : Ticket(match, basePrice), block(block), row(row) {}
+
+    float cena() override {
+        if (row < 8) return getBasePrice() * 1.4;
+        else if (row >= 8 && row <= 15) return getBasePrice() * 1.2;
+        else return getBasePrice();
+    }
+    void display() override {
+        cout << "match: " << getMatch() << " base price: " << getBasePrice() << " final price: " << cena() << endl;
     }
 };
 
-// sitting
-class TicketSitting : public Ticket {
-    int row;
-    int block;
-
+class StandingTicket : public Ticket {
+    char tribune;
 public:
-    TicketSitting(string match, float basePrice, int row, int block) : Ticket(match, basePrice), row(row), block(block) {}
+    StandingTicket(string match, float basePrice, char tribune) : Ticket(match, basePrice), tribune(tribune) {}
 
-    float price(){
-        if (row < 8)
-            return getBasePrice() * 1.4;
-        else if (row >= 8 && row <= 15)
-            return getBasePrice() * 1.2;
-        else
-            return getBasePrice();
+    float cena() override {
+        return (tribune == 's' || tribune == 'S') ? getBasePrice() * 1.3 : getBasePrice();
     }
-};
 
-// standing
-class TicketStanding : public Ticket {
-    char tribune; // S - south, N - north, E - east, W - west
-
-public:
-    TicketStanding(string match, float basePrice, char tribune) : Ticket(match, basePrice), tribune(tribune) {}
-
-    float price(){
-        return tribune == 's' ? getBasePrice() * 1.3 : getBasePrice();
+    void display() override {
+        cout << "match: " << getMatch() << " base price: " << getBasePrice() << " final price: " << cena() << endl;
     }
 };
 
 class TicketManager {
     vector<Ticket*> tickets;
-
 public:
-	//ticketManager(){}
+    TicketManager() {}
+
+    ~TicketManager() {
+        for (Ticket* t : tickets) {
+            delete t;
+        }
+    }
 
     void addTicket(Ticket* t) {
         tickets.push_back(t);
     }
 
-    void addTickts(int n){
-    	for (int i = 0; i < n; ++i)
-    	{
-            int ticketType;
-            string match;
-            float basePrice;
-            cout << "Enter details for ticket " << i + 1 << endl;
-            cout << "Enter match name: ";
-            cin>>match;
-            cout << "Enter base price: ";
+    void addTickets(int n) {
+        string match;
+        int row, block, type;
+        float basePrice;
+        char tribune;
+
+        for (int i = 0; i < n; ++i) {
+        	cout<<"match: ";
+            cin >> match;
+            cout<<"base price: ";
             cin >> basePrice;
-            cout << "Enter ticket type (1 for Seating, 2 for Standing): ";
-            cin >> ticketType;
+            cout<<"type (1-siting 2-standing): ";
+            cin >> type;
 
-            if (ticketType == 1){
-                int block, row;
-                cout << "Enter block: ";
-                cin >> block;
-                cout << "Enter row: ";
+            if (type == 1) {
+            	cout<<"row: ";
                 cin >> row;
-                addTicket(new TicketSitting(match,basePrice,row,block));
-            }else if (ticketType == 2){
-            	char tribune;
-                cout << "Enter tribune (S - south, N - north, E - east, W - west): ";
-                cin >> tribune;
-                addTicket(new TicketStanding(match, basePrice, tribune));
-            }else {
-            	cout<<"invalid skipping..."<<endl;
+                cout<<"block: ";
+                cin >> block;
+                addTicket(new SeatingTicket(match, basePrice, block, row));
             }
-
-    	}
+            else if (type == 2) {
+ 			    cout << "Enter tribune (S - south, N - north, E - east, W - west): ";
+                cin >> tribune;
+                addTicket(new StandingTicket(match, basePrice, tribune));
+            }
+        }
     }
 
-    void displayTickets(){
-    	for(Ticket* t : tickets){
-    		t->display();
-    	}
+    void display() {
+        for (Ticket* t : tickets) {
+            t->display();
+        }
     }
-
 };
 
-int main() {
-    int n;
+int main(int argc, char const *argv[])
+{
     TicketManager tm;
-    cout << "Enter the number of tickets to add: ";
-    cin >> n;
-    tm.addTickts(n);
-    tm.displayTickets();
+    tm.addTickets(1);
+    tm.display();
     return 0;
 }
