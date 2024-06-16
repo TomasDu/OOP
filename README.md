@@ -1,2 +1,2 @@
 ## Exercises:
-[[OOP/]]
+[movie ticket/exercise.md]
