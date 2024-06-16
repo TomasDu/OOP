@@ -80,6 +80,7 @@ public:
                 addTicket(new regularTicket(movie_name, basePrice, seatNumber));
             }
             else if (isVip == 'y' || isVip == 'Y'){
+                cout<<"Has acess to the lounge? (1-yes | n-no):";
                 cin>>hasLoungeAccess;
                 addTicket(new vipTicket(movie_name,basePrice,hasLoungeAccess));
             }
